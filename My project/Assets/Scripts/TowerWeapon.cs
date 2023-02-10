@@ -7,16 +7,26 @@ public enum WeaponState { SearchTarget = 0, AttackToTarget }
 public class TowerWeapon : MonoBehaviour
 {
     [SerializeField]
-    private GameObject projectilePrefab;
+    private GameObject      projectilePrefab;
     [SerializeField]
-    private Transform spwanPoint;
+    private Transform       spwanPoint;
     [SerializeField]
-    private float attackRate = 0.5f;
+    private float           attackRate = 0.5f;
     [SerializeField]
-    private float attackRange = 2.0f;
-    private WeaponState weaponState = WeaponState.SearchTarget;
-    private Transform attackTarget = null;
-    private EnemySpawner enemySpawner;
+    private float           attackRange = 2.0f;
+    [SerializeField]
+    private int             attackDamage = 1;
+    private WeaponState     weaponState = WeaponState.SearchTarget;
+    private Transform       attackTarget = null;
+    private EnemySpawner    enemySpawner;
+
+
+    public void ChangeState(WeaponState newState)
+    {
+        StopCoroutine(weaponState.ToString());
+        weaponState = newState;
+        StartCoroutine(weaponState.ToString());
+    }
 
     public void Setup(EnemySpawner enemySpawner)
     {
@@ -24,12 +34,6 @@ public class TowerWeapon : MonoBehaviour
         ChangeState(WeaponState.SearchTarget);
     }
 
-    public void ChangeState(WeaponState newState)
-    {
-        StopCoroutine(weaponState.ToString());
-        weaponState = newState;
-        StopCoroutine(weaponState.ToString());
-    }
 
     public void Update()
     {
@@ -52,7 +56,6 @@ public class TowerWeapon : MonoBehaviour
 
         while (true)
         {
-            Debug.Log("ON");
             float clasestDistSqr = Mathf.Infinity;
 
             for (int i = 0; i < enemySpawner.EnemyList.Count; ++i)
@@ -101,6 +104,7 @@ public class TowerWeapon : MonoBehaviour
 
     private void SpawnProjectile()
     {
-        Instantiate(projectilePrefab, spwanPoint.position, Quaternion.identity);
+        GameObject clone = Instantiate(projectilePrefab, spwanPoint.position, Quaternion.identity);
+        clone.GetComponent<Projectile>().Setup(attackTarget, attackDamage);
     }
 }
