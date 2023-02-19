@@ -13,7 +13,7 @@ public class EnemyHPViewer : MonoBehaviour
         this.enemyHp = enemyHp;
         hpSlider = GetComponent<Slider>();
     }
-    void Update()
+    private void Update()
     {
         hpSlider.value = enemyHp.CurrentHP / enemyHp.MaxHP;
     }
